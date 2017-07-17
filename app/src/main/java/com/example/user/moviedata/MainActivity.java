@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -33,15 +32,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         search_text = (EditText) findViewById(R.id.search_box);
-        search_hint = (TextView) findViewById(R.id.results);
-        recycler = (RecyclerView) findViewById(R.id.results_recycler);
+        search_hint = (TextView) findViewById(R.id.search_hint);
+        recycler = (RecyclerView) findViewById(R.id.results);
         search_grid = new MovieDataAdapter();
         res = getResources();
         search_url = res.getString(R.string.query_url);
 
-        GridLayoutManager layout_manager = new GridLayoutManager(this, GridLayout.VERTICAL);
+        GridLayoutManager layout_manager = new GridLayoutManager(this, 3);
         recycler.setLayoutManager(layout_manager);
         recycler.setHasFixedSize(true);
+
         recycler.setAdapter(search_grid);
 
         //run search
@@ -57,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.action_search) {
-            /*results.setText(
-                    String.format(search_url, APIkey, search)
-            );*/
             runSearch();
             return true;
         }
@@ -99,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String[] returned_data) {
-            //search_hint.setText(returned_data[0]);
-            search_grid.setData(new MovieJSONAdapter(returned_data[0]).parsed_results);
+            search_grid.setData(MovieJSONAdapter.parseJSON(returned_data[0]));
         }
     }
 }

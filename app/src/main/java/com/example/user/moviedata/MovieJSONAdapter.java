@@ -1,7 +1,5 @@
 package com.example.user.moviedata;
 
-import android.net.Uri;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,30 +17,39 @@ import java.util.Scanner;
 
 public class MovieJSONAdapter {
 
-    public MovieDataObject[] parsed_results;
+    public MovieJSONAdapter() {
 
-    public MovieJSONAdapter(String search_results) {
+    }
+
+    public static MovieDataObject[] parseJSON(String search_results) {
+        MovieDataObject[] parsed_results;
         try {
             JSONObject search_object = new JSONObject(search_results);
             JSONArray array = search_object.getJSONArray("results");
             parsed_results = new MovieDataObject[array.length()];
+
             for (int counter = 0; counter < array.length(); counter++) {
                 JSONObject parsed_object = array.getJSONObject(counter);
-                parsed_results[counter].movie_title = parsed_object.getString("title");
-                parsed_results[counter].original_title = parsed_object.getString("original_title");
-                parsed_results[counter].overview = parsed_object.getString("overview");
-                parsed_results[counter].release_date = parsed_object.getString("release_date");
+                parsed_results[counter] = new MovieDataObject();
 
-                parsed_results[counter].poster = parsed_object.getString("poster_path");
-                parsed_results[counter].backdrop = parsed_object.getString("backdrop_path");
+                parsed_results[counter].setMovie_title(parsed_object.getString("title"));
+                parsed_results[counter].setOriginal_title(parsed_object.getString("original_title"));
+                parsed_results[counter].setOverview(parsed_object.getString("overview"));
+                parsed_results[counter].setRelease_date(parsed_object.getString("release_date"));
 
-                parsed_results[counter].popularity = parsed_object.getDouble("popularity");
-                parsed_results[counter].vote_average = parsed_object.getDouble("vote_average");
+                parsed_results[counter].setPoster(parsed_object.getString("poster_path"));
+                parsed_results[counter].setBackdrop(parsed_object.getString("backdrop_path"));
+
+                parsed_results[counter].setPopularity(parsed_object.getDouble("popularity"));
+                parsed_results[counter].setVote_average(parsed_object.getDouble("vote_average"));
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
+            parsed_results = null;
         }
 
+        return parsed_results;
     }
 
     public static URL buildURL(String base_url, String APIkey, String search) {
