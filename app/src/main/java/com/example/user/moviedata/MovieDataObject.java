@@ -1,16 +1,19 @@
 package com.example.user.moviedata;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
 /**
  * Created by User on 7/11/2017.
  */
 
-public class MovieDataObject {
+public class MovieDataObject implements Parcelable{
 
     private String movie_title, original_title, overview, release_date;
-    private String poster, backdrop;
+    private Bitmap poster, backdrop;
     private double popularity, vote_average;
 
     public MovieDataObject() {
@@ -19,12 +22,35 @@ public class MovieDataObject {
         overview = "";
         release_date = "";
 
-        poster = "";
-        backdrop = "";
+        poster = null;
+        backdrop = null;
 
         popularity = 0;
         vote_average = 0;
     }
+
+    protected MovieDataObject(Parcel in) {
+        movie_title = in.readString();
+        original_title = in.readString();
+        overview = in.readString();
+        release_date = in.readString();
+        poster = in.readParcelable(Bitmap.class.getClassLoader());
+        backdrop = in.readParcelable(Bitmap.class.getClassLoader());
+        popularity = in.readDouble();
+        vote_average = in.readDouble();
+    }
+
+    public static final Creator<MovieDataObject> CREATOR = new Creator<MovieDataObject>() {
+        @Override
+        public MovieDataObject createFromParcel(Parcel in) {
+            return new MovieDataObject(in);
+        }
+
+        @Override
+        public MovieDataObject[] newArray(int size) {
+            return new MovieDataObject[size];
+        }
+    };
 
     public String getOriginal_title() {
         return original_title;
@@ -58,22 +84,6 @@ public class MovieDataObject {
         this.movie_title = movie_title;
     }
 
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
-    }
-
-    public String getBackdrop() {
-        return backdrop;
-    }
-
-    public void setBackdrop(String backdrop) {
-        this.backdrop = backdrop;
-    }
-
     public double getPopularity() {
         return popularity;
     }
@@ -88,5 +98,38 @@ public class MovieDataObject {
 
     public void setVote_average(double vote_average) {
         this.vote_average = vote_average;
+    }
+
+    public Bitmap getPoster() {
+        return poster;
+    }
+
+    public void setPoster(Bitmap poster) {
+        this.poster = poster;
+    }
+
+    public Bitmap getBackdrop() {
+        return backdrop;
+    }
+
+    public void setBackdrop(Bitmap backdrop) {
+        this.backdrop = backdrop;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(movie_title);
+        dest.writeString(original_title);
+        dest.writeString(overview);
+        dest.writeString(release_date);
+        dest.writeParcelable(poster, flags);
+        dest.writeParcelable(backdrop, flags);
+        dest.writeDouble(popularity);
+        dest.writeDouble(vote_average);
     }
 }
