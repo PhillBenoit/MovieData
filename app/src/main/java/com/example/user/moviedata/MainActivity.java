@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recycler;
     private MovieDataAdapter search_grid;
     private String search_url;
-    private static final String APIkey = "f1a61c945d3b5771b361206661d63bd5";
+    private static final String APIkey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
