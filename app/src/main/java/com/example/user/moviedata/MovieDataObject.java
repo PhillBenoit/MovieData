@@ -1,9 +1,12 @@
 package com.example.user.moviedata;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.io.ByteArrayOutputStream;
 
 
 /**
@@ -34,8 +37,12 @@ public class MovieDataObject implements Parcelable{
         original_title = in.readString();
         overview = in.readString();
         release_date = in.readString();
-        poster = in.readParcelable(Bitmap.class.getClassLoader());
-        backdrop = in.readParcelable(Bitmap.class.getClassLoader());
+
+        //poster = in.readParcelable(Bitmap.class.getClassLoader());
+        //backdrop = in.readParcelable(Bitmap.class.getClassLoader());
+        poster = readBMP(in.createByteArray());
+        backdrop = readBMP(in.createByteArray());
+
         popularity = in.readDouble();
         vote_average = in.readDouble();
     }
@@ -127,9 +134,32 @@ public class MovieDataObject implements Parcelable{
         dest.writeString(original_title);
         dest.writeString(overview);
         dest.writeString(release_date);
-        dest.writeParcelable(poster, flags);
-        dest.writeParcelable(backdrop, flags);
+
+        //dest.writeParcelable(poster, flags);
+        //dest.writeParcelable(backdrop, flags);
+        dest.writeByteArray(writeBMP(poster));
+        dest.writeByteArray(writeBMP(backdrop));
+
         dest.writeDouble(popularity);
         dest.writeDouble(vote_average);
+    }
+
+    private byte[] writeBMP(Bitmap picture) {
+        if (picture != null) {
+            ByteArrayOutputStream byte_stream = new ByteArrayOutputStream();
+            picture.compress(Bitmap.CompressFormat.PNG, 100, byte_stream);
+            return byte_stream.toByteArray();
+        } else {
+            byte[] temp = {Byte.parseByte("0"), Byte.parseByte("0")};
+            return temp;
+        }
+    }
+
+    private Bitmap readBMP(byte[] png) {
+        if (png.length != 2) {
+            return BitmapFactory.decodeByteArray(png, 0, png.length);
+        } else {
+            return null;
+        }
     }
 }

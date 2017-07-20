@@ -85,7 +85,7 @@ public class MovieJSONAdapter {
     }
 
     public void parseJSON(String search_results) {
-
+        if (search_results == null) return;
         try {
             JSONObject search_object = new JSONObject(search_results);
             JSONArray array = search_object.getJSONArray("results");
