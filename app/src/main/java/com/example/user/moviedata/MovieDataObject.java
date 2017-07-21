@@ -1,29 +1,27 @@
 package com.example.user.moviedata;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.ByteArrayOutputStream;
-
-
-/**
- * Created by User on 7/11/2017.
- */
-
+// Data structure to store search results that implements parcelable so
+// that movie data can be passed to the details activity
 public class MovieDataObject implements Parcelable{
 
     private String movie_title, original_title, overview, release_date;
-    private Bitmap poster, backdrop;
+    private String poster, backdrop;
     private double popularity, vote_average;
 
+    //determines if a string is equal to a null result
+    //used to prevent pictures from loading from bad URLs
+    public static boolean equalsBaseURL(String testString) {
+        return testString.equals(PublicStrings.base_image_url + PublicStrings.null_string);
+    }
+
     public MovieDataObject() {
-        movie_title = "";
-        original_title = "";
-        overview = "";
-        release_date = "";
+        movie_title = null;
+        original_title = null;
+        overview = null;
+        release_date = null;
 
         poster = null;
         backdrop = null;
@@ -32,21 +30,21 @@ public class MovieDataObject implements Parcelable{
         vote_average = 0;
     }
 
+    //unpacks parcel
     protected MovieDataObject(Parcel in) {
         movie_title = in.readString();
         original_title = in.readString();
         overview = in.readString();
         release_date = in.readString();
 
-        //poster = in.readParcelable(Bitmap.class.getClassLoader());
-        //backdrop = in.readParcelable(Bitmap.class.getClassLoader());
-        poster = readBMP(in.createByteArray());
-        backdrop = readBMP(in.createByteArray());
+        poster = in.readString();
+        backdrop = in.readString();
 
         popularity = in.readDouble();
         vote_average = in.readDouble();
     }
 
+    //declares methods for deconstructing parcels
     public static final Creator<MovieDataObject> CREATOR = new Creator<MovieDataObject>() {
         @Override
         public MovieDataObject createFromParcel(Parcel in) {
@@ -107,20 +105,22 @@ public class MovieDataObject implements Parcelable{
         this.vote_average = vote_average;
     }
 
-    public Bitmap getPoster() {
-        return poster;
+    //returns with base URL prefix
+    public String getPoster() {
+        return PublicStrings.base_image_url + poster;
     }
 
-    public void setPoster(Bitmap poster) {
-        this.poster = poster;
+    public void setPoster(String url) {
+        poster = url;
     }
 
-    public Bitmap getBackdrop() {
-        return backdrop;
+    //returns with base URL prefix
+    public String getBackdrop() {
+        return PublicStrings.base_image_url + backdrop;
     }
 
-    public void setBackdrop(Bitmap backdrop) {
-        this.backdrop = backdrop;
+    public void setBackdrop(String url) {
+        backdrop = url;
     }
 
     @Override
@@ -128,6 +128,7 @@ public class MovieDataObject implements Parcelable{
         return 0;
     }
 
+    //constructs parcel from object
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(movie_title);
@@ -135,31 +136,10 @@ public class MovieDataObject implements Parcelable{
         dest.writeString(overview);
         dest.writeString(release_date);
 
-        //dest.writeParcelable(poster, flags);
-        //dest.writeParcelable(backdrop, flags);
-        dest.writeByteArray(writeBMP(poster));
-        dest.writeByteArray(writeBMP(backdrop));
+        dest.writeString(poster);
+        dest.writeString(backdrop);
 
         dest.writeDouble(popularity);
         dest.writeDouble(vote_average);
-    }
-
-    private byte[] writeBMP(Bitmap picture) {
-        if (picture != null) {
-            ByteArrayOutputStream byte_stream = new ByteArrayOutputStream();
-            picture.compress(Bitmap.CompressFormat.PNG, 100, byte_stream);
-            return byte_stream.toByteArray();
-        } else {
-            byte[] temp = {Byte.parseByte("0"), Byte.parseByte("0")};
-            return temp;
-        }
-    }
-
-    private Bitmap readBMP(byte[] png) {
-        if (png.length != 2) {
-            return BitmapFactory.decodeByteArray(png, 0, png.length);
-        } else {
-            return null;
-        }
     }
 }
