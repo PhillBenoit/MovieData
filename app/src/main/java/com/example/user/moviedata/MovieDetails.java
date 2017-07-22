@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -61,7 +62,7 @@ public class MovieDetails extends AppCompatActivity {
             //set backdrop image
             if (!MovieDataObject.equalsBaseURL(movie.getBackdrop())) {
                 Picasso.with(this)
-                        .load(movie.getBackdrop())
+                        .load(movie.getBackdrop()).placeholder(R.drawable.blank)
                         .into(backdrop);
             }
 
@@ -81,6 +82,10 @@ public class MovieDetails extends AppCompatActivity {
                 posterClicked();
             }
         });
+
+        //enable back button
+        android.app.ActionBar bar = getActionBar();
+        if (bar != null) bar.setDisplayHomeAsUpEnabled(true);
     }
 
     //starts activity to view the poster
@@ -90,5 +95,17 @@ public class MovieDetails extends AppCompatActivity {
         Intent intent = new Intent(context, destination);
         intent.putExtra(PublicStrings.poster_intent_item, poster_url);
         startActivity(intent);
+    }
+
+    //back button action
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

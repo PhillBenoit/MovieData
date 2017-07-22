@@ -70,6 +70,8 @@ public class MovieJSONUtils {
 
         try {
             connection = (HttpURLConnection) search_url.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(10000);
             InputStream in = connection.getInputStream();
 
             Scanner scanner = new Scanner(in);

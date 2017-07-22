@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:rotation="270"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/backdrop"
+            android:contentDescription="backdrop image"
+            android:adjustViewBounds="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:shadowColor="@android:color/black"
+            android:textSize="32sp"
+            android:padding="8sp"
+            app:layout_constraintBottom_toBottomOf="@+id/backdrop"
+            app:layout_constraintLeft_toLeftOf="@+id/backdrop" />
+    </android.support.constraint.ConstraintLayout>
+
+    <ScrollView
+        app:layout_constraintTop_toBottomOf="@id/backdrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:padding="8sp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/original_title"
+                android:paddingTop="8sp"
+                android:paddingStart="8sp"
+                android:paddingLeft="8sp"
+                android:paddingRight="8sp"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/release_date"
+                android:paddingTop="16sp"
+                android:paddingLeft="16sp"
+                android:paddingRight="16sp"
+                android:paddingStart="16sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/popularity"
+                android:paddingStart="16sp"
+                android:paddingLeft="16sp"
+                android:paddingRight="16sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/vote_average"
+                android:paddingStart="16sp"
+                android:paddingLeft="16sp"
+                android:paddingRight="16sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/overview"
+                android:padding="8sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/poster_button"
+                android:textSize="24sp"
+                android:text="View Poster"
+                android:padding="24sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

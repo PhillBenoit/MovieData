@@ -10,6 +10,7 @@
     <ImageView
         android:id="@+id/backdrop"
         android:contentDescription="backdrop image"
+        android:src="@drawable/blank"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
@@ -31,68 +32,69 @@
         app:layout_constraintBottom_toBottomOf="@+id/backdrop"
         app:layout_constraintLeft_toLeftOf="@+id/backdrop" />
 
-    <TextView
-        android:id="@+id/original_title"
-        android:paddingTop="8sp"
-        android:paddingStart="8sp"
-        android:paddingLeft="8sp"
-        android:paddingRight="8sp"
+    <ScrollView
         app:layout_constraintTop_toBottomOf="@id/backdrop"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:textSize="22sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/release_date"
-        android:paddingTop="16sp"
-        android:paddingLeft="16sp"
-        android:paddingRight="16sp"
-        android:paddingStart="16sp"
-        app:layout_constraintTop_toBottomOf="@id/original_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/popularity"
-        android:paddingStart="16sp"
-        app:layout_constraintTop_toBottomOf="@id/release_date"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16sp"
-        android:paddingRight="16sp"/>
-
-    <TextView
-        android:id="@+id/vote_average"
-        android:paddingStart="16sp"
-        android:paddingLeft="16sp"
-        android:paddingRight="16sp"
-        app:layout_constraintTop_toBottomOf="@id/popularity"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/overview"
         android:padding="8sp"
-        app:layout_constraintTop_toBottomOf="@id/vote_average"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/original_title"
+                android:paddingTop="8sp"
+                android:paddingStart="8sp"
+                android:paddingLeft="8sp"
+                android:paddingRight="8sp"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/poster_button"
-        android:textSize="24sp"
-        android:text="View Poster"
-        android:padding="24sp"
-        app:layout_constraintTop_toBottomOf="@id/overview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/release_date"
+                android:paddingTop="16sp"
+                android:paddingLeft="16sp"
+                android:paddingRight="16sp"
+                android:paddingStart="16sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/popularity"
+                android:paddingStart="16sp"
+                android:paddingLeft="16sp"
+                android:paddingRight="16sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/vote_average"
+                android:paddingStart="16sp"
+                android:paddingLeft="16sp"
+                android:paddingRight="16sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/overview"
+                android:padding="8sp"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/poster_button"
+                android:textSize="24sp"
+                android:text="View Poster"
+                android:padding="24sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
