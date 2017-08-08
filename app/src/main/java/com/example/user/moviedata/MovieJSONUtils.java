@@ -44,6 +44,8 @@ public class MovieJSONUtils {
 
                 parsed_results[counter].setPopularity(parsed_object.getDouble("popularity"));
                 parsed_results[counter].setVote_average(parsed_object.getDouble("vote_average"));
+
+                parsed_results[counter].setId(parsed_object.getInt("id"));
             }
 
         } catch (JSONException e) {
@@ -54,9 +56,20 @@ public class MovieJSONUtils {
     }
 
     //builds the search url used to get results
-    public static URL buildURL(String base_url, String search_type, String APIkey) {
+    public static URL buildURL(String search_type) {
         try {
-            return new URL(String.format(base_url, search_type, APIkey));
+            return new URL(String.format
+                    (PublicStrings.base_search_url, search_type, PrivateStrings.api_key));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static URL buildURL(Integer id, String search_type) {
+        try {
+            return new URL(String.format
+                    (PublicStrings.base_details_url, id, search_type, PrivateStrings.api_key));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

@@ -10,6 +10,7 @@ public class MovieDataObject implements Parcelable{
     private String movie_title, original_title, overview, release_date;
     private String poster, backdrop;
     private double popularity, vote_average;
+    private int id;
 
     //determines if a string is equal to a null result
     //used to prevent pictures from loading from bad URLs
@@ -28,6 +29,8 @@ public class MovieDataObject implements Parcelable{
 
         popularity = 0;
         vote_average = 0;
+
+        id = 0;
     }
 
     //unpacks parcel
@@ -42,6 +45,8 @@ public class MovieDataObject implements Parcelable{
 
         popularity = in.readDouble();
         vote_average = in.readDouble();
+
+        id = in.readInt();
     }
 
     //declares methods for deconstructing parcels
@@ -141,5 +146,15 @@ public class MovieDataObject implements Parcelable{
 
         dest.writeDouble(popularity);
         dest.writeDouble(vote_average);
+
+        dest.writeInt(id);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -87,13 +87,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/poster_button"
+            <android.support.v7.widget.LinearLayoutCompat
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/poster_button"
+                    android:layout_weight="1"
+                    android:textSize="24sp"
+                    android:text="View Poster"
+                    android:padding="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/review_button"
+                    android:textSize="24sp"
+                    android:layout_weight="1"
+                    android:text="Check Reviews"
+                    android:padding="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <Spinner
+                android:id="@+id/trailer_spinner"
                 android:textSize="24sp"
-                android:text="View Poster"
+                android:layout_weight="1"
                 android:padding="24sp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
     </ScrollView>
 

@@ -5,4 +5,5 @@
         https://api.themoviedb.org/3/search/movie?api_key=%s&amp;query=%s
     </string>
     <string name="picture_url">https://image.tmdb.org/t/p/w500</string>
+
 </resources>

@@ -75,8 +75,7 @@ public class MainActivity extends AppCompatActivity
 
     //runs search based on given search type
     private void runSearch(String search_type) {
-        new getMovies().execute(PublicStrings.base_search_url,
-                search_type, PrivateStrings.api_key);
+        new getMovies().execute(search_type);
     }
 
     //click handler for search results
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         //builds search url and executes search
         @Override
         protected String doInBackground(String... params) {
-            URL search_url = MovieJSONUtils.buildURL(params[0], params[1], params[2]);
+            URL search_url = MovieJSONUtils.buildURL(params[0]);
             return MovieJSONUtils.getData(search_url);
         }
 
