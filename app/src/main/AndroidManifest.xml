@@ -41,6 +41,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MovieDetails" />
         </activity>
+        <provider
+            android:authorities="com.example.user.moviedata"
+            android:name="com.example.user.moviedata.ContentProvider.MovieContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
