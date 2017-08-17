@@ -12,18 +12,18 @@ import com.example.user.moviedata.ContentProvider.DBApi;
 import com.squareup.picasso.Picasso;
 
 //connects movies to cells from search results
-public class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.PosterCell> {
+class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.PosterCell> {
 
     private MovieDataObject[] search_results;
     private final MovieDataAdapterOnClickHandler click_handler;
 
-    public MovieDataAdapter(MovieDataAdapterOnClickHandler c_h) {
+    MovieDataAdapter(MovieDataAdapterOnClickHandler c_h) {
         search_results = null;
         click_handler = c_h;
     }
 
     //creates base interface overwritten in main activity
-    public interface MovieDataAdapterOnClickHandler {
+    interface MovieDataAdapterOnClickHandler {
         void onClick(MovieDataObject movie);
     }
 
@@ -34,9 +34,8 @@ public class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.Post
 
         int layoutIdForListItem = R.layout.poster_grid;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean attach_immediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, parent, attach_immediately);
+        View view = inflater.inflate(layoutIdForListItem, parent, false);
         return new PosterCell(view);
     }
 
@@ -66,7 +65,7 @@ public class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.Post
         Context context;
 
         //sets up the cell for the recycler view
-        public PosterCell(View itemView) {
+        private PosterCell(View itemView) {
             super(itemView);
             poster_text = (TextView) itemView.findViewById(R.id.cell_text);
             poster_picture = (ImageView) itemView.findViewById(R.id.cell_poster);

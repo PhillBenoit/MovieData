@@ -10,23 +10,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 /**
  * Created by User on 8/11/2017.
  * Content provider for the App's database
  */
 
+
 public class MovieContentProvider extends ContentProvider {
 
     public static final int FAVORITES = 100;
-    public static final int FAVORITES_WITH_ID = 101;
 
     public static final int FAVORITES_REVIEWS = 200;
-    public static final int FAVORITES_REVIEWS_WITH_ID = 201;
 
     public static final int TEMP = 300;
-    public static final int TEMP_WITH_ID = 301;
 
     private static final UriMatcher uri_matcher = buildUriMatcher();
 
@@ -36,13 +33,10 @@ public class MovieContentProvider extends ContentProvider {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(DBContract.AUTHORITY, DBContract.Favorites.TABLE_NAME, FAVORITES);
-        uriMatcher.addURI(DBContract.AUTHORITY, DBContract.Favorites.TABLE_NAME + "/#", FAVORITES_WITH_ID);
 
         uriMatcher.addURI(DBContract.AUTHORITY, DBContract.FavoritesReviews.TABLE_NAME, FAVORITES_REVIEWS);
-        uriMatcher.addURI(DBContract.AUTHORITY, DBContract.FavoritesReviews.TABLE_NAME + "/#", FAVORITES_REVIEWS_WITH_ID);
 
         uriMatcher.addURI(DBContract.AUTHORITY, DBContract.TempReviews.TABLE_NAME, TEMP);
-        uriMatcher.addURI(DBContract.AUTHORITY, DBContract.TempReviews.TABLE_NAME + "/#", TEMP_WITH_ID);
 
         return uriMatcher;
     }
@@ -139,15 +133,13 @@ public class MovieContentProvider extends ContentProvider {
         String table;
 
         //forks selecting the appropriate table
-        //postpend selection if it for tables that remove by id
+        //postpend selection if needed for tables that remove by id
         switch (match) {
-            case FAVORITES_WITH_ID:
             case FAVORITES:
                 table = DBContract.Favorites.TABLE_NAME;
                 selection = selection + "=?";
                 break;
 
-            case FAVORITES_REVIEWS_WITH_ID:
             case FAVORITES_REVIEWS:
                 table = DBContract.FavoritesReviews.TABLE_NAME;
                 selection = selection + "=?";
@@ -164,7 +156,7 @@ public class MovieContentProvider extends ContentProvider {
         tasksDeleted = db.delete(table, selection, selectionArgs);
 
         Context c = getContext();
-        if (tasksDeleted != 0 && c != null) c.getContentResolver().notifyChange(uri, null);
+        if (tasksDeleted > 0 && c != null) c.getContentResolver().notifyChange(uri, null);
 
         return tasksDeleted;
     }

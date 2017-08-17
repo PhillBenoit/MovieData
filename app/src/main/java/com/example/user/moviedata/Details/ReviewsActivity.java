@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.user.moviedata.ContentProvider.DBApi;
@@ -16,7 +15,6 @@ import com.example.user.moviedata.R;
 
 public class ReviewsActivity extends AppCompatActivity {
 
-    private RecyclerView recycler;
     private ReviewAdapter adapter;
 
     @Override
@@ -24,7 +22,7 @@ public class ReviewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
 
-        recycler = (RecyclerView) findViewById(R.id.reviews);
+        RecyclerView recycler = (RecyclerView) findViewById(R.id.reviews);
         LinearLayoutManager layout = new LinearLayoutManager(this);
         adapter = new ReviewAdapter();
         recycler.setLayoutManager(layout);
@@ -36,7 +34,7 @@ public class ReviewsActivity extends AppCompatActivity {
         int i = 0;
         if (intent.hasExtra(PublicStrings.reviews_intent_item))
             i = intent.getIntExtra(PublicStrings.reviews_intent_item, 0);
-        runCursor(DBApi.getReviewsCursor(i, getBaseContext()));
+        runCursor(DBApi.getReviewsCursor(i, this));
 
         //enable back button
         android.app.ActionBar bar = getActionBar();
@@ -59,10 +57,10 @@ public class ReviewsActivity extends AppCompatActivity {
         int result_count = c.getCount();
         if (result_count == 0) return;
         int author_column_index, review_column_index, counter = 0;
-        String[] authors = new String[result_count];
-        String[] reviews = new String[result_count];
         author_column_index = c.getColumnIndex(DBContract.TempReviews.COLUMN_AUTHOR);
         review_column_index = c.getColumnIndex(DBContract.TempReviews.COLUMN_REVIEW);
+        String[] authors = new String[result_count];
+        String[] reviews = new String[result_count];
         c.moveToFirst();
         do {
             authors[counter] = c.getString(author_column_index);

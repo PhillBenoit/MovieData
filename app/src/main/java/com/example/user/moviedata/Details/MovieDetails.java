@@ -26,14 +26,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.net.HttpURLConnection;
-//import java.net.MalformedURLException;
-//import java.net.URL;
-//import java.util.Locale;
-//import java.util.Scanner;
-
 public class MovieDetails extends AppCompatActivity {
 
     MovieDataObject movie;
@@ -53,19 +45,23 @@ public class MovieDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        //set up buttons
         poster = (Button) findViewById(R.id.poster_button);
         reviews = (Button) findViewById(R.id.review_button);
         favorites = (Button) findViewById(R.id.favorites_button);
 
+        //set up spinner for trailers
         trailers = (Spinner) findViewById(R.id.trailer_spinner);
         youtube_keys = new String[]{""};
         spinner_items = new String[]{"Trailers Unavailable"};
-        trailer_adapter = new ArrayAdapter<String>
+        trailer_adapter = new ArrayAdapter<>
                 (this, android.R.layout.simple_spinner_dropdown_item, spinner_items);
         trailers.setAdapter(trailer_adapter);
 
+        //backdrop image
         backdrop = (ImageView) findViewById(R.id.backdrop);
 
+        //textviews
         title = (TextView) findViewById(R.id.title);
         original_title = (TextView) findViewById(R.id.original_title);
         release_date = (TextView) findViewById(R.id.release_date);
@@ -77,15 +73,13 @@ public class MovieDetails extends AppCompatActivity {
         if (intent.hasExtra(PublicStrings.details_intent_item)) {
             String set_string;
             //unpacks movie data from the intent
-            movie = (MovieDataObject)
-                    intent.getParcelableExtra(PublicStrings.details_intent_item);
+            movie = intent.getParcelableExtra(PublicStrings.details_intent_item);
 
             new getTrailers().execute();
 
             //forking logic to load either from favorites table or from the network
             int id = movie.getId();
-            Context c = getBaseContext();
-            if (DBApi.favoriteExist(id, c)) {
+            if (DBApi.favoriteExist(id, this)) {
                 //button defaults to add. if it exists in the table, it should be toggled
                 toggleFavoritesButton();
 
@@ -93,16 +87,16 @@ public class MovieDetails extends AppCompatActivity {
                 favorites.setEnabled(true);
 
                 //checks for reviews in the favorites reviews
-                if (DBApi.favoriteReviewExist(id, c)) enableReviews();
+                if (DBApi.favoriteReviewExist(id, this)) enableReviews();
 
                 //loads backdrop from the database
-                DBApi.getBackdrop(id, backdrop, c);
+                DBApi.getBackdrop(id, backdrop, this);
 
                 //button is disabled if the poster is not available
-                if (!DBApi.hasPoster(id, c)) disablePoster();
+                if (!DBApi.hasPoster(id, this)) disablePoster();
             } else {
                 //get reviews from network
-                new getReviews().execute();
+                new getReviewsFromNetwork().execute();
 
                 //set backdrop image from network
                 if (!MovieDataObject.equalsBaseURL(movie.getBackdrop())) {
@@ -192,10 +186,14 @@ public class MovieDetails extends AppCompatActivity {
     private void toggleFavoritesDB() {
         switch (favorites.getText().toString()) {
             case PublicStrings.add_favorite:
-                DBApi.addFavorite(movie, getBaseContext());
+                DBApi.addFavorite(movie, this);
                 break;
             case PublicStrings.remove_favorite:
-                DBApi.removeFavorite(movie.getId(), getBaseContext());
+                DBApi.removeFavorite(movie.getId(), this);
+                //disables reviews and adding to favorites then loads reviews from network
+                favorites.setEnabled(false);
+                reviews.setEnabled(false);
+                new getReviewsFromNetwork().execute();
                 break;
         }
     }
@@ -225,9 +223,8 @@ public class MovieDetails extends AppCompatActivity {
 
     //starts activity that shows reviews
     private void reviewsClicked() {
-        Context context = getBaseContext();
         Class destination = ReviewsActivity.class;
-        Intent intent = new Intent(context, destination);
+        Intent intent = new Intent(this, destination);
         //launches intent with id if it's in the database
         //(checked using favorites button text)
         if (favorites.getText().toString().equals(PublicStrings.remove_favorite))
@@ -244,7 +241,7 @@ public class MovieDetails extends AppCompatActivity {
     }
 
     //gets the list of trailers from the network
-    public class getTrailers extends AsyncTask<Void, Void, String> {
+    private class getTrailers extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... params) {
@@ -254,7 +251,7 @@ public class MovieDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             parseTrailers(s);
-            trailer_adapter = new ArrayAdapter<String>
+            trailer_adapter = new ArrayAdapter<>
                     (getBaseContext(), android.R.layout.simple_spinner_dropdown_item, spinner_items);
             trailers.setAdapter(trailer_adapter);
         }
@@ -297,7 +294,7 @@ public class MovieDetails extends AppCompatActivity {
     //Get reviews from network.  This call is made to check for reviews and decide if the reviews
     //button should be enabled.  Returned data is loaded in to the temp table so it can be loaded
     //in to either favorites reviews or the reviews activity.
-    public class getReviews extends AsyncTask<Integer, Void, String> {
+    private class getReviewsFromNetwork extends AsyncTask<Integer, Void, String> {
 
         @Override
         protected String doInBackground(Integer... params) {

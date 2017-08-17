@@ -1,10 +1,8 @@
 package com.example.user.moviedata.Details;
 
 import android.content.Intent;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -35,7 +33,7 @@ public class ViewPoster extends AppCompatActivity {
         //if intent has ID, load from database
         if (intent.hasExtra(PublicStrings.poster_intent_item_id)) {
             DBApi.getPoster(intent.getIntExtra(PublicStrings.poster_intent_item_id, 0),
-                    poster, getBaseContext());
+                    poster, this);
         }
 
         //enable back button

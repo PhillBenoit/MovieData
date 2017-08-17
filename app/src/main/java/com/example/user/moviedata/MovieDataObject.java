@@ -34,7 +34,7 @@ public class MovieDataObject implements Parcelable{
     }
 
     //unpacks parcel
-    protected MovieDataObject(Parcel in) {
+    private MovieDataObject(Parcel in) {
         movie_title = in.readString();
         original_title = in.readString();
         overview = in.readString();

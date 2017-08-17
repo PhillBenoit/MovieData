@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Scanner;
 
 //utilities for interacting with the movie database
@@ -19,7 +20,7 @@ public class MovieJSONUtils {
     }
 
     //parses movie data used by the rest of the program from string search results
-    public static MovieDataObject[] parseJSON(String search_results) {
+    static MovieDataObject[] parseJSON(String search_results) {
         //prevents loading empty data
         if (search_results == null) return null;
         MovieDataObject[] parsed_results;
@@ -56,7 +57,7 @@ public class MovieJSONUtils {
     }
 
     //builds the search url used to get results
-    public static URL buildURL(String search_type) {
+    static URL buildURL(String search_type) {
         try {
             return new URL(String.format
                     (PublicStrings.base_search_url, search_type, PrivateStrings.api_key));
@@ -68,8 +69,8 @@ public class MovieJSONUtils {
 
     public static URL buildURL(Integer id, String search_type) {
         try {
-            return new URL(String.format
-                    (PublicStrings.base_details_url, id, search_type, PrivateStrings.api_key));
+            return new URL(String.format(Locale.ENGLISH,
+                    PublicStrings.base_details_url, id, search_type, PrivateStrings.api_key));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

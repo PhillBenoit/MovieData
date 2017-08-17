@@ -3,7 +3,6 @@ package com.example.user.moviedata;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,7 +18,6 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity
         implements MovieDataAdapter.MovieDataAdapterOnClickHandler{
 
-    private RecyclerView recycler;
     private MovieDataAdapter search_grid;
 
     private String last_selected;
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //assign objects from XML layout
-        recycler = (RecyclerView) findViewById(R.id.results);
+        RecyclerView recycler = (RecyclerView) findViewById(R.id.results);
         search_grid = new MovieDataAdapter(this);
 
         //init recycler
@@ -83,7 +81,7 @@ public class MainActivity extends AppCompatActivity
 
     //runs query to database and loads results to adapter
     private void loadFromFavorites(){
-        search_grid.setData(DBApi.getFavorites(getBaseContext()));
+        search_grid.setData(DBApi.getFavorites(this));
     }
 
     //runs search based on given search type
@@ -98,12 +96,12 @@ public class MainActivity extends AppCompatActivity
         Context context = MainActivity.this;
         Class destination = MovieDetails.class;
         Intent intent = new Intent(context, destination);
-        intent.putExtra(PublicStrings.details_intent_item, (Parcelable) movie);
+        intent.putExtra(PublicStrings.details_intent_item, movie);
         startActivity(intent);
     }
 
     //class for the background task to populate search results
-    public class getMovies extends AsyncTask<String, Void, String> {
+    private class getMovies extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

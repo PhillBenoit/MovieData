@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * helper for crating the Database used by the content provider
  */
 
-public class DBCreator extends SQLiteOpenHelper {
+class DBCreator extends SQLiteOpenHelper {
 
     // The name of the database
     private static final String DATABASE_NAME = "movieDb.db";
@@ -17,7 +17,7 @@ public class DBCreator extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version
     private static final int VERSION = 1;
 
-    public DBCreator(Context context) {
+    DBCreator(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
