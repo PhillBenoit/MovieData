@@ -94,30 +94,21 @@
 
                 <Button
                     android:id="@+id/poster_button"
-                    android:layout_weight="1"
-                    android:textSize="24sp"
                     android:text="View Poster"
-                    android:padding="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/Buttons" />
 
                 <Button
                     android:id="@+id/review_button"
-                    android:textSize="24sp"
-                    android:layout_weight="1"
-                    android:text="Check Reviews"
-                    android:padding="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:text="Reviews Unavalible"
+                    android:enabled="false"
+                    style="@style/Buttons"/>
 
                 <Button
                     android:id="@+id/favorites_button"
-                    android:textSize="24sp"
-                    android:layout_weight="1"
+                    android:enabled="false"
                     android:text="Add To Favorites"
-                    android:padding="24sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/Buttons" />
+
             </android.support.v7.widget.LinearLayoutCompat>
             <Spinner
                 android:id="@+id/trailer_spinner"

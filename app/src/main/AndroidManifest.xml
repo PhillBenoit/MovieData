@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetails"
+            android:name=".Details.MovieDetails"
             android:label="Movie Details"
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -26,20 +26,20 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".ViewPoster"
+            android:name=".Details.ViewPoster"
             android:label="Poster"
-            android:parentActivityName=".MovieDetails">
+            android:parentActivityName=".Details.MovieDetails">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MovieDetails" />
+                android:value=".Details.MovieDetails" />
         </activity>
         <activity
-            android:name="ReviewsActivity"
+            android:name=".Details.ReviewsActivity"
             android:label="Reviews"
-            android:parentActivityName=".MovieDetails">
+            android:parentActivityName=".Details.MovieDetails">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MovieDetails" />
+                android:value=".Details.MovieDetails" />
         </activity>
         <provider
             android:authorities="com.example.user.moviedata"

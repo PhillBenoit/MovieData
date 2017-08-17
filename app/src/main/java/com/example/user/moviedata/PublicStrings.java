@@ -6,8 +6,13 @@ public class PublicStrings {
 
         //intent item names
             details_intent_item = "MOVIE_PARCEL",
-            poster_intent_item = "EXTRA_STRING",
+            poster_intent_item_url = "POSTER_URL",
+            poster_intent_item_id = "MOVIE_ID",
             reviews_intent_item = "ID",
+
+        //favorites labels
+            add_favorite = "Add To Favorites",
+            remove_favorite = "Remove From Favorites",
 
         //output for details
             release_date_prefix = "Release Date: ",

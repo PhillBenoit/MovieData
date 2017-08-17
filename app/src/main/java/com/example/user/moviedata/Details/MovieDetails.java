@@ -36,8 +36,7 @@ import org.json.JSONObject;
 
 public class MovieDetails extends AppCompatActivity {
 
-    String poster_url;
-    int id;
+    MovieDataObject movie;
 
     ImageView backdrop;
     TextView title, original_title, release_date, popularity, vote_average, overview;
@@ -78,11 +77,43 @@ public class MovieDetails extends AppCompatActivity {
         if (intent.hasExtra(PublicStrings.details_intent_item)) {
             String set_string;
             //unpacks movie data from the intent
-            MovieDataObject movie = (MovieDataObject)
+            movie = (MovieDataObject)
                     intent.getParcelableExtra(PublicStrings.details_intent_item);
 
-            id = movie.getId();
             new getTrailers().execute();
+
+            //forking logic to load either from favorites table or from the network
+            int id = movie.getId();
+            Context c = getBaseContext();
+            if (DBApi.favoriteExist(id, c)) {
+                //button defaults to add. if it exists in the table, it should be toggled
+                toggleFavoritesButton();
+
+                //button defaults to disabled until data loads
+                favorites.setEnabled(true);
+
+                //checks for reviews in the favorites reviews
+                if (DBApi.favoriteReviewExist(id, c)) enableReviews();
+
+                //loads backdrop from the database
+                DBApi.getBackdrop(id, backdrop, c);
+
+                //button is disabled if the poster is not available
+                if (!DBApi.hasPoster(id, c)) disablePoster();
+            } else {
+                //get reviews from network
+                new getReviews().execute();
+
+                //set backdrop image from network
+                if (!MovieDataObject.equalsBaseURL(movie.getBackdrop())) {
+                    Picasso.with(this)
+                            .load(movie.getBackdrop()).placeholder(R.drawable.blank)
+                            .into(backdrop);
+                }
+
+                //button is disabled if the poster is not available
+                if (MovieDataObject.equalsBaseURL(movie.getPoster())) disablePoster();
+            }
 
             //direct sets
             title.setText(movie.getMovie_title());
@@ -99,21 +130,6 @@ public class MovieDetails extends AppCompatActivity {
             set_string = PublicStrings.vote_average_prefix +
                     Double.toString(movie.getVote_average());
             vote_average.setText(set_string);
-
-            //set backdrop image
-            if (!MovieDataObject.equalsBaseURL(movie.getBackdrop())) {
-                Picasso.with(this)
-                        .load(movie.getBackdrop()).placeholder(R.drawable.blank)
-                        .into(backdrop);
-            }
-
-            //saves poster url to pass to poster view activity
-            poster_url = movie.getPoster();
-            //button is disabled if the poster is not available
-            if (MovieDataObject.equalsBaseURL(poster_url)) {
-                poster.setEnabled(false);
-                poster.setText(PublicStrings.poster_not_available_message);
-            }
         }
 
         //click listener for the poster button
@@ -132,10 +148,20 @@ public class MovieDetails extends AppCompatActivity {
             }
         });
 
+        //click listener for favorites
+        favorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFavoritesDB();
+                toggleFavoritesButton();
+            }
+        });
+
         //click listener for trailer
         trailers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //first entry is always a label, prevents launching
                 if (position != 0) trailerClicked(position);
             }
 
@@ -145,10 +171,33 @@ public class MovieDetails extends AppCompatActivity {
             }
         });
 
-
         //enable back button
         android.app.ActionBar bar = getActionBar();
         if (bar != null) bar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    //toggles text of the favorites button between adding and removing favorites
+    private void toggleFavoritesButton() {
+        switch (favorites.getText().toString()) {
+            case PublicStrings.add_favorite:
+                favorites.setText(PublicStrings.remove_favorite);
+                break;
+            case PublicStrings.remove_favorite:
+                favorites.setText(PublicStrings.add_favorite);
+                break;
+        }
+    }
+
+    //adds or removes from the favorites table based on the current button text
+    private void toggleFavoritesDB() {
+        switch (favorites.getText().toString()) {
+            case PublicStrings.add_favorite:
+                DBApi.addFavorite(movie, getBaseContext());
+                break;
+            case PublicStrings.remove_favorite:
+                DBApi.removeFavorite(movie.getId(), getBaseContext());
+                break;
+        }
     }
 
     //starts activity to view the poster
@@ -156,7 +205,9 @@ public class MovieDetails extends AppCompatActivity {
         Context context = this;
         Class destination = ViewPoster.class;
         Intent intent = new Intent(context, destination);
-        intent.putExtra(PublicStrings.poster_intent_item, poster_url);
+        if (favorites.getText().toString().equals(PublicStrings.add_favorite))
+            intent.putExtra(PublicStrings.poster_intent_item_url, movie.getPoster());
+        else intent.putExtra(PublicStrings.poster_intent_item_id, movie.getId());
         startActivity(intent);
     }
 
@@ -177,22 +228,27 @@ public class MovieDetails extends AppCompatActivity {
         Context context = getBaseContext();
         Class destination = ReviewsActivity.class;
         Intent intent = new Intent(context, destination);
-        intent.putExtra(PublicStrings.reviews_intent_item, id);
+        //launches intent with id if it's in the database
+        //(checked using favorites button text)
+        if (favorites.getText().toString().equals(PublicStrings.remove_favorite))
+            intent.putExtra(PublicStrings.reviews_intent_item, movie.getId());
         startActivity(intent);
     }
 
     //launches intent for trailer
     private void trailerClicked(int index) {
+        //resets the selection to the spinner label before launching the intent
         trailers.setSelection(0);
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format
                 (PublicStrings.base_youtube_url, youtube_keys[index]))));
     }
 
+    //gets the list of trailers from the network
     public class getTrailers extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... params) {
-            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(id, "videos"));
+            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(movie.getId(), "videos"));
         }
 
         @Override
@@ -203,12 +259,14 @@ public class MovieDetails extends AppCompatActivity {
             trailers.setAdapter(trailer_adapter);
         }
 
+        //creates string array for the adapter to use to populate the spinner
         void parseTrailers(String json_results) {
             //prevents loading empty data
             if (json_results == null) return;
             try {
                 JSONObject search_object = new JSONObject(json_results);
                 JSONArray array_results = search_object.getJSONArray("results");
+                //adds one to make the first item a label for the spinner
                 spinner_items = new String[array_results.length() + 1];
                 youtube_keys = new String[array_results.length() + 1];
                 spinner_items[0] = "Select Trailer";
@@ -224,32 +282,61 @@ public class MovieDetails extends AppCompatActivity {
         }
     }
 
+    //used to enable the reviews button
+    private void enableReviews() {
+        reviews.setText("Check Reviews");
+        reviews.setEnabled(true);
+    }
+
+    //used to disable view poster button
+    private void disablePoster() {
+        poster.setEnabled(false);
+        poster.setText(PublicStrings.poster_not_available_message);
+    }
+
+    //Get reviews from network.  This call is made to check for reviews and decide if the reviews
+    //button should be enabled.  Returned data is loaded in to the temp table so it can be loaded
+    //in to either favorites reviews or the reviews activity.
     public class getReviews extends AsyncTask<Integer, Void, String> {
 
         @Override
         protected String doInBackground(Integer... params) {
-            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(params[0], "reviews"));
+            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(movie.getId(), "reviews"));
         }
 
         @Override
         protected void onPostExecute(String s) {
             parseReviews(s);
+
+            //once data has been loaded, allow adding to favorites
+            favorites.setEnabled(true);
         }
 
         void parseReviews(String json_results) {
+
             //prevents loading empty data
             if (json_results == null) return;
+
             try {
                 JSONObject search_object = new JSONObject(json_results);
+
+                //prevents extra work and prevents enabling the reviews button
                 if (search_object.getInt("total_results") == 0) return;
                 JSONArray array_results = search_object.getJSONArray("results");
+                Context c = getBaseContext();
+
+                //clears temp table before loading
+                DBApi.deleteTemp(c);
                 for (int counter = 0; counter < array_results.length(); counter++) {
                     JSONObject parsed_trailer = array_results.getJSONObject(counter);
-                    //??????????????????????????????????????????????????????????
-                    //??????????????????????????????????????????????????????????
-                    //??????????????????????????????????????????????????????????
-                    //??????????????????????????????????????????????????????????
+
+                    //adds to temp table
+                    DBApi.addTempReview(parsed_trailer.getString("author"),
+                            parsed_trailer.getString("content"), c);
                 }
+
+                //enable launching reviews activity once they have been loaded
+                enableReviews();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

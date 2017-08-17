@@ -8,10 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telecom.Call;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.user.moviedata.ContentProvider.DBApi;
 import com.example.user.moviedata.Details.MovieDetails;
 
 import java.net.URL;
@@ -70,10 +70,20 @@ public class MainActivity extends AppCompatActivity
                     last_selected = "Most Popular";
                     runSearch("popular");
                     return true;
+
+                case "Favorites":
+                    last_selected = "Favorites";
+                    loadFromFavorites();
+                    return true;
             }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //runs query to database and loads results to adapter
+    private void loadFromFavorites(){
+        search_grid.setData(DBApi.getFavorites(getBaseContext()));
     }
 
     //runs search based on given search type

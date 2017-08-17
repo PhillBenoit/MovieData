@@ -13,10 +13,12 @@ import com.example.user.moviedata.R;
 
 /**
  * Created by User on 8/7/2017.
+ * Helps with loading review data for the reviews activity
  */
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.review> {
 
+    //actual data held in the adapter
     private String[] reviews, authors;
 
     public ReviewAdapter() {
@@ -66,6 +68,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.review> {
             review.setText(reviews[index]);
             if (index % 2 == 1) {
                 LinearLayout parent = (LinearLayout) itemView.findViewById(R.id.review_parent);
+
+                //alternates background colors of reviews
                 parent.setBackgroundColor(Color.parseColor("#bbdefb"));
             }
         }

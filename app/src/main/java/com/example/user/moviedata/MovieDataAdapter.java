@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.user.moviedata.ContentProvider.DBApi;
 import com.squareup.picasso.Picasso;
 
 //connects movies to cells from search results
@@ -75,12 +76,14 @@ public class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.Post
 
         //sets text and picture of cell
         void bind(MovieDataObject movie) {
-            //if (poster != null)
-            if (!MovieDataObject.equalsBaseURL(movie.getPoster())) {
+            //load image from favorites if it exists
+            if (DBApi.hasPoster(movie.getId(), context))
+                DBApi.getPoster(movie.getId(), poster_picture, context);
+            //if (poster != null load from network)
+            else if (!MovieDataObject.equalsBaseURL(movie.getPoster()))
                 Picasso.with(context)
                         .load(movie.getPoster())
                         .into(poster_picture);
-            }
             poster_text.setText(movie.getMovie_title());
         }
 

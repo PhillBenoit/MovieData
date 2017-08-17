@@ -1,10 +1,7 @@
 package com.example.user.moviedata.Details;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.support.v7.app.AlertDialog;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,13 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.example.user.moviedata.MovieJSONUtils;
+import com.example.user.moviedata.ContentProvider.DBApi;
+import com.example.user.moviedata.ContentProvider.DBContract;
 import com.example.user.moviedata.PublicStrings;
 import com.example.user.moviedata.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ReviewsActivity extends AppCompatActivity {
 
@@ -30,17 +24,19 @@ public class ReviewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
 
-        Intent intent = getIntent();
-        if (intent.hasExtra(PublicStrings.reviews_intent_item)) {
-            Integer i = intent.getIntExtra(PublicStrings.reviews_intent_item, 0);
-            new getReviews().execute(i);
-        }
-
         recycler = (RecyclerView) findViewById(R.id.reviews);
         LinearLayoutManager layout = new LinearLayoutManager(this);
         adapter = new ReviewAdapter();
         recycler.setLayoutManager(layout);
         recycler.setAdapter(adapter);
+
+        //forking logic to load review data from either the favorites reviews with an id passed
+        //with the intent or temp table with the default 0 id
+        Intent intent = getIntent();
+        int i = 0;
+        if (intent.hasExtra(PublicStrings.reviews_intent_item))
+            i = intent.getIntExtra(PublicStrings.reviews_intent_item, 0);
+        runCursor(DBApi.getReviewsCursor(i, getBaseContext()));
 
         //enable back button
         android.app.ActionBar bar = getActionBar();
@@ -58,54 +54,22 @@ public class ReviewsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class getReviews extends AsyncTask<Integer, Void, String> {
-
-        String[] authors, reviews;
-
-        @Override
-        protected String doInBackground(Integer... params) {
-            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(params[0], "reviews"));
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            parseReviews(s);
-            adapter.setData(authors, reviews);
-        }
-
-        private void noResults() {
-            Log.d("TESTBUG","NO RESULTS");
-            AlertDialog.Builder builder;
-            builder = new AlertDialog.Builder(ReviewsActivity.this);
-            builder.setTitle("NO RESULTS")
-                    .setMessage("There are no reviews for this movie")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            onBackPressed();
-                        }
-                    })
-                    .show();
-        }
-
-        void parseReviews(String json_results) {
-            //prevents loading empty data
-            if (json_results == null) return;
-            JSONObject search_object = null;
-            try {
-                search_object = new JSONObject(json_results);
-                if (search_object.getInt("total_results") == 0) noResults();
-                JSONArray array_results = search_object.getJSONArray("results");
-                authors = new String[array_results.length()];
-                reviews = new String[array_results.length()];
-                for (int counter = 0; counter < array_results.length(); counter++) {
-                    JSONObject parsed_trailer = array_results.getJSONObject(counter);
-                    authors[counter] = parsed_trailer.getString("author");
-                    reviews[counter] = parsed_trailer.getString("content");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    //Runs cursor created from forked logic and loads data in to the adapter
+    private void runCursor(Cursor c) {
+        int result_count = c.getCount();
+        if (result_count == 0) return;
+        int author_column_index, review_column_index, counter = 0;
+        String[] authors = new String[result_count];
+        String[] reviews = new String[result_count];
+        author_column_index = c.getColumnIndex(DBContract.TempReviews.COLUMN_AUTHOR);
+        review_column_index = c.getColumnIndex(DBContract.TempReviews.COLUMN_REVIEW);
+        c.moveToFirst();
+        do {
+            authors[counter] = c.getString(author_column_index);
+            reviews[counter] = c.getString(review_column_index);
+            counter++;
+        } while (c.moveToNext());
+        adapter.setData(authors, reviews);
+        c.close();
     }
 }
