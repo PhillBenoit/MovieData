@@ -32,11 +32,14 @@ public class MovieContentProvider extends ContentProvider {
 
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        uriMatcher.addURI(DBContract.AUTHORITY, DBContract.Favorites.TABLE_NAME, FAVORITES);
+        uriMatcher.addURI(DBContract.AUTHORITY,
+                DBContract.Favorites.TABLE_NAME, FAVORITES);
 
-        uriMatcher.addURI(DBContract.AUTHORITY, DBContract.FavoritesReviews.TABLE_NAME, FAVORITES_REVIEWS);
+        uriMatcher.addURI(DBContract.AUTHORITY,
+                DBContract.FavoritesReviews.TABLE_NAME, FAVORITES_REVIEWS);
 
-        uriMatcher.addURI(DBContract.AUTHORITY, DBContract.TempReviews.TABLE_NAME, TEMP);
+        uriMatcher.addURI(DBContract.AUTHORITY,
+                DBContract.TempReviews.TABLE_NAME, TEMP);
 
         return uriMatcher;
     }
@@ -52,7 +55,9 @@ public class MovieContentProvider extends ContentProvider {
     @Nullable
     @Override
     //queries the database
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection,
+                        @Nullable String selection, @Nullable String[] selectionArgs,
+                        @Nullable String sortOrder) {
         final SQLiteDatabase db = db_tables.getReadableDatabase();
         int match = uri_matcher.match(uri);
         Cursor return_cursor;
@@ -117,7 +122,8 @@ public class MovieContentProvider extends ContentProvider {
 
         long id = db.insert(table_name, null, values);
         if ( id > 0 ) return_uri = ContentUris.withAppendedId(uri, id);
-        else throw new android.database.SQLException("Failed to insert row into " + table_name);
+        else throw new android.database.SQLException
+                ("Failed to insert row into " + table_name);
 
         Context c = getContext();
         if (c != null) c.getContentResolver().notifyChange(uri, null);
@@ -126,7 +132,8 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     //removes from tables
-    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, @Nullable String selection,
+                      @Nullable String[] selectionArgs) {
         final SQLiteDatabase db = db_tables.getWritableDatabase();
         int match = uri_matcher.match(uri);
         int tasksDeleted;
@@ -156,7 +163,8 @@ public class MovieContentProvider extends ContentProvider {
         tasksDeleted = db.delete(table, selection, selectionArgs);
 
         Context c = getContext();
-        if (tasksDeleted > 0 && c != null) c.getContentResolver().notifyChange(uri, null);
+        if (tasksDeleted > 0 && c != null)
+            c.getContentResolver().notifyChange(uri, null);
 
         return tasksDeleted;
     }
@@ -168,7 +176,9 @@ public class MovieContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int update(@NonNull Uri uri, @Nullable ContentValues values,
+                      @Nullable String selection,
+                      @Nullable String[] selectionArgs) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }

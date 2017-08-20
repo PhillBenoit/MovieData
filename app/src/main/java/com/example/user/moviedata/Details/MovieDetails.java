@@ -31,7 +31,8 @@ public class MovieDetails extends AppCompatActivity {
     MovieDataObject movie;
 
     ImageView backdrop;
-    TextView title, original_title, release_date, popularity, vote_average, overview;
+    TextView title, original_title, release_date,
+            popularity, vote_average, overview;
     Button poster, reviews, favorites;
 
     Spinner trailers;
@@ -54,8 +55,9 @@ public class MovieDetails extends AppCompatActivity {
         trailers = (Spinner) findViewById(R.id.trailer_spinner);
         youtube_keys = new String[]{""};
         spinner_items = new String[]{"Trailers Unavailable"};
-        trailer_adapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_spinner_dropdown_item, spinner_items);
+        trailer_adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                spinner_items);
         trailers.setAdapter(trailer_adapter);
 
         //backdrop image
@@ -77,10 +79,12 @@ public class MovieDetails extends AppCompatActivity {
 
             new getTrailers().execute();
 
-            //forking logic to load either from favorites table or from the network
+            //forking logic to load either from
+            //favorites table or from the network
             int id = movie.getId();
             if (DBApi.favoriteExist(id, this)) {
-                //button defaults to add. if it exists in the table, it should be toggled
+                //button defaults to add.
+                //if it exists in the table, it should be toggled
                 toggleFavoritesButton();
 
                 //button defaults to disabled until data loads
@@ -106,7 +110,8 @@ public class MovieDetails extends AppCompatActivity {
                 }
 
                 //button is disabled if the poster is not available
-                if (MovieDataObject.equalsBaseURL(movie.getPoster())) disablePoster();
+                if (MovieDataObject.equalsBaseURL(movie.getPoster()))
+                    disablePoster();
             }
 
             //direct sets
@@ -115,10 +120,12 @@ public class MovieDetails extends AppCompatActivity {
             overview.setText(movie.getOverview());
 
             //sets with prefixes
-            set_string = PublicStrings.release_date_prefix + movie.getRelease_date();
+            set_string = PublicStrings.release_date_prefix +
+                    movie.getRelease_date();
             release_date.setText(set_string);
 
-            set_string = PublicStrings.popularity_prefix + Double.toString(movie.getPopularity());
+            set_string = PublicStrings.popularity_prefix +
+                    Double.toString(movie.getPopularity());
             popularity.setText(set_string);
 
             set_string = PublicStrings.vote_average_prefix +
@@ -152,9 +159,13 @@ public class MovieDetails extends AppCompatActivity {
         });
 
         //click listener for trailer
-        trailers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        trailers.setOnItemSelectedListener
+                (new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view,
+                                       int position,
+                                       long id) {
                 //first entry is always a label, prevents launching
                 if (position != 0) trailerClicked(position);
             }
@@ -190,7 +201,8 @@ public class MovieDetails extends AppCompatActivity {
                 break;
             case PublicStrings.remove_favorite:
                 DBApi.removeFavorite(movie.getId(), this);
-                //disables reviews and adding to favorites then loads reviews from network
+                //disables reviews and adding to favorites
+                //then loads reviews from network
                 favorites.setEnabled(false);
                 reviews.setEnabled(false);
                 new getReviewsFromNetwork().execute();
@@ -245,14 +257,16 @@ public class MovieDetails extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(movie.getId(), "videos"));
+            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(movie.getId(),
+                    "videos"));
         }
 
         @Override
         protected void onPostExecute(String s) {
             parseTrailers(s);
-            trailer_adapter = new ArrayAdapter<>
-                    (getBaseContext(), android.R.layout.simple_spinner_dropdown_item, spinner_items);
+            trailer_adapter = new ArrayAdapter<>(getBaseContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    spinner_items);
             trailers.setAdapter(trailer_adapter);
         }
 
@@ -291,14 +305,16 @@ public class MovieDetails extends AppCompatActivity {
         poster.setText(PublicStrings.poster_not_available_message);
     }
 
-    //Get reviews from network.  This call is made to check for reviews and decide if the reviews
-    //button should be enabled.  Returned data is loaded in to the temp table so it can be loaded
-    //in to either favorites reviews or the reviews activity.
+    //Get reviews from network.  This call is made to check for reviews and
+    //decide if the reviews button should be enabled.  Returned data is loaded
+    //in to the temp table so it can be loaded in to either favorites reviews
+    //or the reviews activity.
     private class getReviewsFromNetwork extends AsyncTask<Integer, Void, String> {
 
         @Override
         protected String doInBackground(Integer... params) {
-            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(movie.getId(), "reviews"));
+            return MovieJSONUtils.getData(MovieJSONUtils.buildURL(movie.getId(),
+                    "reviews"));
         }
 
         @Override

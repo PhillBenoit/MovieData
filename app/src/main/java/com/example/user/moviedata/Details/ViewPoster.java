@@ -33,7 +33,8 @@ public class ViewPoster extends AppCompatActivity {
         //if intent has ID, load from database
         if (intent.hasExtra(PublicStrings.poster_intent_item_id)) {
             DBApi.getPoster(intent.getIntExtra(PublicStrings.poster_intent_item_id, 0),
-                    poster, this);
+                    poster,
+                    this);
         }
 
         //enable back button

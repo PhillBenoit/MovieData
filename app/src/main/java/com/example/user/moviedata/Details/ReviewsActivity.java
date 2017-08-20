@@ -28,8 +28,8 @@ public class ReviewsActivity extends AppCompatActivity {
         recycler.setLayoutManager(layout);
         recycler.setAdapter(adapter);
 
-        //forking logic to load review data from either the favorites reviews with an id passed
-        //with the intent or temp table with the default 0 id
+        //forking logic to load review data from either the favorites reviews
+        //with an id passed with the intent or temp table with the default 0 id
         Intent intent = getIntent();
         int i = 0;
         if (intent.hasExtra(PublicStrings.reviews_intent_item))

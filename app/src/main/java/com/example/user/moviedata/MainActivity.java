@@ -37,9 +37,24 @@ public class MainActivity extends AppCompatActivity
         recycler.setHasFixedSize(true);
         recycler.setAdapter(search_grid);
 
-        //manually runs a top rated search
-        last_selected = "Top Rated";
-        runSearch("top_rated");
+        //manually runs a top rated search if there is no saved state
+        if (savedInstanceState == null) {
+            last_selected = "Top Rated";
+            runSearch("top_rated");
+        }
+    }
+
+    //saves search when the screen turns
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArray("movies", search_grid.getData());
+    }
+
+    //loads search after screen turn
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        search_grid.setData((MovieDataObject[])
+                savedInstanceState.getParcelableArray("movies"));
     }
 
     //creates the menu from XML
@@ -89,8 +104,9 @@ public class MainActivity extends AppCompatActivity
         new getMovies().execute(search_type);
     }
 
-    //click handler for search results
-    //starts Details activity by attaching movie object to intent using a parcelable
+    //Click handler for search results.
+    //Starts details activity by attaching movie object to
+    //the intent using a parcelable.
     @Override
     public void onClick(MovieDataObject movie) {
         Context context = MainActivity.this;

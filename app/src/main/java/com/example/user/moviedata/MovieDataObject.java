@@ -15,7 +15,8 @@ public class MovieDataObject implements Parcelable{
     //determines if a string is equal to a null result
     //used to prevent pictures from loading from bad URLs
     public static boolean equalsBaseURL(String testString) {
-        return testString.equals(PublicStrings.base_image_url + PublicStrings.null_string);
+        return testString.equals(PublicStrings.base_image_url +
+                PublicStrings.null_string);
     }
 
     public MovieDataObject() {
@@ -50,7 +51,8 @@ public class MovieDataObject implements Parcelable{
     }
 
     //declares methods for deconstructing parcels
-    public static final Creator<MovieDataObject> CREATOR = new Creator<MovieDataObject>() {
+    public static final Creator<MovieDataObject>
+            CREATOR = new Creator<MovieDataObject>() {
         @Override
         public MovieDataObject createFromParcel(Parcel in) {
             return new MovieDataObject(in);

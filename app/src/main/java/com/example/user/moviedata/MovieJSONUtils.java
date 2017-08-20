@@ -35,17 +35,29 @@ public class MovieJSONUtils {
                 JSONObject parsed_object = array.getJSONObject(counter);
                 parsed_results[counter] = new MovieDataObject();
 
-                parsed_results[counter].setMovie_title(parsed_object.getString("title"));
-                parsed_results[counter].setOriginal_title(parsed_object.getString("original_title"));
-                parsed_results[counter].setOverview(parsed_object.getString("overview"));
-                parsed_results[counter].setRelease_date(parsed_object.getString("release_date"));
+                //Strings
+                parsed_results[counter].setMovie_title
+                        (parsed_object.getString("title"));
+                parsed_results[counter].setOriginal_title
+                        (parsed_object.getString("original_title"));
+                parsed_results[counter].setOverview
+                        (parsed_object.getString("overview"));
+                parsed_results[counter].setRelease_date
+                        (parsed_object.getString("release_date"));
 
-                parsed_results[counter].setPoster(parsed_object.getString("poster_path"));
-                parsed_results[counter].setBackdrop(parsed_object.getString("backdrop_path"));
+                //String urls for pictures
+                parsed_results[counter].setPoster
+                        (parsed_object.getString("poster_path"));
+                parsed_results[counter].setBackdrop
+                        (parsed_object.getString("backdrop_path"));
 
-                parsed_results[counter].setPopularity(parsed_object.getDouble("popularity"));
-                parsed_results[counter].setVote_average(parsed_object.getDouble("vote_average"));
+                //double precision floating points
+                parsed_results[counter].setPopularity
+                        (parsed_object.getDouble("popularity"));
+                parsed_results[counter].setVote_average
+                        (parsed_object.getDouble("vote_average"));
 
+                //Integer containing id
                 parsed_results[counter].setId(parsed_object.getInt("id"));
             }
 
@@ -60,7 +72,9 @@ public class MovieJSONUtils {
     static URL buildURL(String search_type) {
         try {
             return new URL(String.format
-                    (PublicStrings.base_search_url, search_type, PrivateStrings.api_key));
+                    (PublicStrings.base_search_url,
+                            search_type,
+                            PrivateStrings.api_key));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
@@ -70,7 +84,9 @@ public class MovieJSONUtils {
     public static URL buildURL(Integer id, String search_type) {
         try {
             return new URL(String.format(Locale.ENGLISH,
-                    PublicStrings.base_details_url, id, search_type, PrivateStrings.api_key));
+                    PublicStrings.base_details_url,
+                    id, search_type,
+                    PrivateStrings.api_key));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

@@ -58,6 +58,11 @@ class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.PosterCell>
         notifyDataSetChanged();
     }
 
+    //returns movies for persistence saving
+    public MovieDataObject[] getData() {
+        return search_results;
+    }
+
     //class for the cell in the view holder
     class PosterCell extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView poster_text;
@@ -86,7 +91,8 @@ class MovieDataAdapter extends RecyclerView.Adapter<MovieDataAdapter.PosterCell>
             poster_text.setText(movie.getMovie_title());
         }
 
-        //click handler that finds the Movie Data Object by the same index as the clicked cell
+        //click handler that finds the Movie Data Object by
+        //the same index as the clicked cell
         @Override
         public void onClick(View v) {
             int index = getAdapterPosition();

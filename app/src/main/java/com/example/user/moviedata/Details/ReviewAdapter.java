@@ -66,7 +66,8 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.review> {
             review.setText(reviews[index]);
             //alternates background colors of reviews
             if (index % 2 == 1) {
-                LinearLayout parent = (LinearLayout) itemView.findViewById(R.id.review_parent);
+                LinearLayout parent = (LinearLayout)
+                        itemView.findViewById(R.id.review_parent);
                 parent.setBackgroundColor(Color.parseColor("#bbdefb"));
             }
         }

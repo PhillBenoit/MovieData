@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Movie Data</string>
     <string name="search">Search</string>
-    <string name="query_url" formatted="false">
+    <string translatable="false" name="query_url" formatted="false">
         https://api.themoviedb.org/3/search/movie?api_key=%s&amp;query=%s
     </string>
-    <string name="picture_url">https://image.tmdb.org/t/p/w500</string>
+
+    <string translatable="false" name="picture_url">https://image.tmdb.org/t/p/w500</string>
 
 </resources>

@@ -1,7 +1,17 @@
 package com.example.user.moviedata;
 
+import android.content.Context;
+
 //strings used throughout the program
 public class PublicStrings {
+
+    private static String getFromRes(int id, Context c) {
+        return c.getString(id);
+    }
+
+    public static String BASE_IMAGE_URL(Context c)
+    {return getFromRes(R.string.picture_url, c);}
+
     public static final String
 
         //intent item names
