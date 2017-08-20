@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity
         implements MovieDataAdapter.MovieDataAdapterOnClickHandler{
 
     private MovieDataAdapter search_grid;
+    GridLayoutManager layout_manager;
 
     private String last_selected;
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         search_grid = new MovieDataAdapter(this);
 
         //init recycler
-        GridLayoutManager layout_manager = new GridLayoutManager(this, 3);
+        layout_manager = new GridLayoutManager(this, 3);
         recycler.setLayoutManager(layout_manager);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(search_grid);
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     //saves search when the screen turns
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("scroll", layout_manager.findFirstVisibleItemPosition());
         outState.putParcelableArray("movies", search_grid.getData());
     }
 
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         search_grid.setData((MovieDataObject[])
                 savedInstanceState.getParcelableArray("movies"));
+        layout_manager.scrollToPosition(savedInstanceState.getInt("scroll"));
     }
 
     //creates the menu from XML
