@@ -11,7 +11,7 @@
         android:id="@+id/backdrop"
         android:contentDescription="backdrop image"
         android:src="@drawable/blank"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/backdrop"
         app:layout_constraintLeft_toLeftOf="parent"
         android:padding="8sp"
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
@@ -49,7 +49,7 @@
                 android:paddingLeft="8sp"
                 android:paddingRight="8sp"
                 android:textSize="22sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
@@ -59,7 +59,7 @@
                 android:paddingRight="16sp"
                 android:paddingStart="16sp"
                 android:textSize="16sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:paddingLeft="16sp"
                 android:paddingRight="16sp"
                 android:textSize="16sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
@@ -77,14 +77,14 @@
                 android:paddingLeft="16sp"
                 android:paddingRight="16sp"
                 android:textSize="16sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/overview"
                 android:padding="8sp"
                 android:textSize="16sp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.LinearLayoutCompat
